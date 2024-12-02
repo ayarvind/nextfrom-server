@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from typing import Optional
-from routes import auth
+from routes import auth, nextform
 from fastapi.middleware.cors import CORSMiddleware
 from middlewares.auth import AuthMiddleware
-
 app = FastAPI()
 
 app.add_middleware(
@@ -17,6 +16,8 @@ app.add_middleware(
 app.add_middleware(AuthMiddleware)
 
 app.include_router(auth.router, tags='Auth', prefix='/api/v1')
+app.include_router(nextform.router, tags='Nextform', prefix='/api/v1')
+
 @app.get('/health')
 def health_check():
     return {

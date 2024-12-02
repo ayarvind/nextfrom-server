@@ -1,5 +1,6 @@
 from datetime import datetime
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from db import db
 from models import User
@@ -29,7 +30,8 @@ async def update_user(request: UpdateUser):
 
     # Fetch the updated user
     updated_user = await db.get_collection('users').find_one({'phone': request.phone})
-    return {'message': 'User updated successfully', 'user': user_serializer(updated_user)}
+    response_data =  {'message': 'User updated successfully', 'user': user_serializer(updated_user)}
+    return JSONResponse(response_data,status_code=201)
 
 
 @router.post('/auth')
@@ -46,4 +48,7 @@ async def auth(phone: str):
     
     user = user_serializer(user)
     token = create_token(user)
-    return {'token': token, 'user': user}
+    return JSONResponse({
+        'token':token,
+        'user':user
+    },status_code=201)
